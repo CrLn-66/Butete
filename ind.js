@@ -12,10 +12,10 @@ var snakeY = BlockSize * 4;
 //food (tae)
 var foodX;
 var foodY;
-
+var score = 0;
 //speed
-velocityX = 0;
-velocityY = 0;
+var velocityX = 0;
+var velocityY = 0;
 
 var gameOver = false;
 
@@ -30,11 +30,25 @@ window.onload = function(){
   placeTae();
   document.addEventListener("keyup", changeDirection);
  // update();
- setInterval(update, 1000/10);
+ setInterval(update, 100);
+//resetVar();
+}
+
+function resetVar(){
+  gameOver = false;
+  score = 0;
+  snakeX =  BlockSize * 4;
+  snakeY =  BlockSize * 4;
+  velocityX = 0;
+  velocityY = 0;
+  snakeBody = [];
+  placeTae();
 }
 
 function update(){
   if(gameOver){
+    resetVar();
+    //update();
     return;
   }
   
@@ -48,9 +62,11 @@ function update(){
   
   if (snakeX == foodX && snakeY == foodY){
     snakeBody.push([foodX, foodY]);
+    score += 1;
     placeTae();
   }
-  
+ context.font = "20px Arial";
+ context.fillText(score, 10, 20);
   for(let i = snakeBody.length-1; i> 0;i--){
     snakeBody[i]= snakeBody[i-1];
   }
@@ -70,12 +86,14 @@ function update(){
   if(snakeX < 0 || snakeX> cols*BlockSize || snakeY < 0 || snakeY > rows * BlockSize){
     gameOver = true;
     alert("Idiot!! why did you hit the wall!?");
+    //resetVar();
   }
   
   for (let i = 0; i < snakeBody.length; i++) {
     if(snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]){
       gameOver = true;
       alert("Greedy bitch!!");
+      
     }
   }
 }
