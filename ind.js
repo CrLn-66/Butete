@@ -1,14 +1,14 @@
 //board
-var BlockSize = 20;
-var rows = 15;
-var cols = 15;
+var BlockSize = 30;
+var rows = 25;
+var cols = 25;
 var board;
 var context;
 
 //head of butete
 var snakeX = BlockSize * 4;
 var snakeY = BlockSize * 4;
-
+var gap = 5;
 //food (tae)
 var foodX;
 var foodY;
@@ -16,9 +16,9 @@ var score = 0;
 //speed
 var velocityX = 0;
 var velocityY = 0;
-
+var speed = 175;
 var gameOver = false;
-
+var highScore;
 
 //body
 var snakeBody = [];
@@ -30,12 +30,21 @@ window.onload = function(){
   placeTae();
   document.addEventListener("keyup", changeDirection);
  // update();
- setInterval(update, 100);
+ var cookie = getCookie("hscore");
+ if(cookie == "" || cookie == null){
+   document.cookie = "hscore=0";
+   highScore = 0;
+ }else{
+   highScore = cookie;
+ }
+ update();
 //resetVar();
 }
 
 function resetVar(){
   gameOver = false;
+  speed = 175;
+  gap = 5;
   score = 0;
   snakeX =  BlockSize * 4;
   snakeY =  BlockSize * 4;
@@ -47,9 +56,12 @@ function resetVar(){
 
 function update(){
   if(gameOver){
+    if(score > highScore){
+      highScore = score;
+      document.cookie = "hscore="+highScore;
+    }
     resetVar();
     //update();
-    return;
   }
   
   //board
@@ -65,8 +77,7 @@ function update(){
     score += 1;
     placeTae();
   }
- context.font = "20px Arial";
- context.fillText(score, 10, 20);
+ 
   for(let i = snakeBody.length-1; i> 0;i--){
     snakeBody[i]= snakeBody[i-1];
   }
@@ -74,16 +85,25 @@ function update(){
     snakeBody[0] = [snakeX, snakeY];
   }
    //butete head
-  context.fillStyle="yellow";
+    context.fillStyle="yellow";
+  
+// content.fillText(snakeY, 41, 50);
   snakeX += velocityX * BlockSize;
   snakeY += velocityY * BlockSize;
   context.fillRect(snakeX, snakeY, BlockSize, BlockSize);
   for (let i =0; i < snakeBody.length;i++) {
     context.fillRect(snakeBody[i][0],snakeBody[i][1], BlockSize, BlockSize);
   }
-  
+  context.font = "40px Arial";
+ context.fillText(score, 10, 35);
+ context.font = "25px Arial";
+ context.fillText("High Score : "+highScore, 10, 70);
+ if(score == gap){
+   speed -= 15;
+   gap += 5;
+ }
   //is GameOver
-  if(snakeX < 0 || snakeX> cols*BlockSize || snakeY < 0 || snakeY > rows * BlockSize){
+  if(snakeX < 0 || snakeX > (cols * BlockSize)-25 || snakeY < 0 || snakeY > (rows * BlockSize)-25){
     gameOver = true;
     alert("Idiot!! why did you hit the wall!?");
     //resetVar();
@@ -96,6 +116,7 @@ function update(){
       
     }
   }
+  window.setTimeout(update, speed);
 }
 
 function placeTae(){
@@ -136,4 +157,18 @@ function action(f){
       velocityX = 1;
       velocityY = 0;
     }
+}
+function getCookie(username) {
+  let name = username + "=";
+  let spli = document.cookie.split(';');
+  for(var j = 0; j < spli.length; j++) {
+    let char = spli[j];
+    while (char.charAt(0) == ' ') {
+      char = char.substring(1);
+    }
+    if (char.indexOf(name) == 0) {
+      return char.substring(name.length, char.length);
+    }
+  }
+  return "";
 }
