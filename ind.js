@@ -127,16 +127,16 @@ function placeTae(){
 
 function changeDirection(e){
   console.log(e);
-     if (e == "ArrowUp") {
+     if (e.code == "ArrowUp") {
        action('up');
      }
-    else if (e == "ArrowDown") {
+    else if (e.code == "ArrowDown") {
        action('down');
      }
-    else if (e == "ArrowLeft") {
+    else if (e.code == "ArrowLeft") {
        action('left');
      }
-    else if (e == "ArrowRight") {
+    else if (e.code == "ArrowRight") {
        action('right');
      }
 }
