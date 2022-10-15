@@ -126,6 +126,7 @@ function placeTae(){
 }
 
 function changeDirection(e){
+  console.log(e);
      if (e == "ArrowUp") {
        action('up');
      }
